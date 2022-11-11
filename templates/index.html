@@ -1,0 +1,11 @@
+  {{#each postIndex}}
+  <a href="{{ ../posts_out_path }}/{{ pathStub }}">
+    <div class="post_ele">
+      <h4>{{ title }}</h4>
+      {{#if ../toggles.show_dates}}
+      <span class="timestamp">{{ timestamp }}</span>
+      <!-- {{ timestamp_native }} -->
+      {{/if}}
+    </div>
+  </a>
+  {{/each}}

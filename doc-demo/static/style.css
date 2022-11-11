@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Lora:400,500,700");
 @import url("https://fonts.googleapis.com/css?family=Lato:400,500,700");
-@import url("https://fonts.googleapis.com/css?family=Bebas+Neue:400,500,700");
+@import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,500,700");
 
 html {
     height: 100%;
@@ -10,7 +10,7 @@ body {
   font-family: "Lato";
   line-height: 1.5em;
   font-size: 1.2em;
-  background: rgb(198, 198, 198);
+  background: rgb(255, 255, 255);
   color: rgb(49, 49, 49);
   height: 100%;
   background-size: 100%;
@@ -37,8 +37,8 @@ blockquote {
 }
 
 #title {
-  font-family: "Bebas Neue";
-  letter-spacing: 0.05em;
+  font-family: "Josefin Sans";
+  font-variant: small-caps;
   margin-bottom: 0;
   font-size: 2.5em;
 }
@@ -69,7 +69,7 @@ hr {
 
 blockquote {
   border-left: 1px dotted rgb(49, 49, 49);
-  padding-left: 10px;
+  padding-left: 2vw;
 }
 
 pre {
@@ -127,12 +127,12 @@ pre {
 
 a {
   font-weight: bold;
-  color: rgb(52, 52, 52);
+  color: rgb(46, 69, 122);
   text-decoration: none;
 }
 
 a:hover {
-  color: rgb(46, 69, 122);
+  color: #2980b9;
 }
 
 ul a {
@@ -198,11 +198,6 @@ ul a {
 
 #footer_content a {
   padding-left: 0.4vw;
-}
-
-#main_content_container hr {
-  width: 35%;
-  border: 1px dotted rgb(49, 49, 49);
 }
 
 #main_content {

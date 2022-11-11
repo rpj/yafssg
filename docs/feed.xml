@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Docs-As-A-Demo</title>
+        <link>https://rpj.github.io/yafssg</link>
+        <description>Docs-As-A-Demo: for &lt;b&gt;&lt;a href='https://github.com/rpj/yafssg'&gt;Yet Another Friendly Static Site Generator&lt;/a&gt;&lt;/b&gt;</description>
+        <lastBuildDate>Wed, 16 Nov 2022 00:36:54 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Installation]]></title>
+            <link>https://rpj.github.io/yafssg/2022/11/13/Installation.html</link>
+            <guid>https://rpj.github.io/yafssg/2022/11/13/Installation.html</guid>
+            <pubDate>Sun, 13 Nov 2022 13:39:42 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Configuration]]></title>
+            <link>https://rpj.github.io/yafssg/2022/11/13/Configuration.html</link>
+            <guid>https://rpj.github.io/yafssg/2022/11/13/Configuration.html</guid>
+            <pubDate>Sun, 13 Nov 2022 14:03:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Creating Posts]]></title>
+            <link>https://rpj.github.io/yafssg/2022/11/13/Creating_Posts.html</link>
+            <guid>https://rpj.github.io/yafssg/2022/11/13/Creating_Posts.html</guid>
+            <pubDate>Sun, 13 Nov 2022 14:09:09 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Building the Site]]></title>
+            <link>https://rpj.github.io/yafssg/2022/11/13/Building_the_Site.html</link>
+            <guid>https://rpj.github.io/yafssg/2022/11/13/Building_the_Site.html</guid>
+            <pubDate>Sun, 13 Nov 2022 14:09:27 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

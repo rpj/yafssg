@@ -1,6 +1,8 @@
+                    </div>
+                  <div class="container spacer mainsidespace"></div>
+              </div>
               <div class="container spacer">&nbsp;</div>
 
-              {{ footer_content }}
 
               <div class="container">
                 <div class="container spacer">&nbsp;</div>
@@ -8,6 +10,15 @@
                 <div class="container spacer">&nbsp;</div>
               </div>
               <hr width="100%"/>
+              {{#if footer_content }}
+              <div class="container">
+                <div class="container spacer">&nbsp;</div>
+                <div class="container" id="footer_content">
+                  {{{ footer_content }}}
+                </div>
+                <div class="container spacer">&nbsp;</div>
+              </div>
+              {{/if}}
             </div>
           </div>
           
@@ -15,5 +26,6 @@
       </div>
       <div class="container spacer"></div>
     </div>
+  {{{ analytics }}}
   </body>
 </html>

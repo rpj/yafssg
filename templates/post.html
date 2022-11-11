@@ -1,0 +1,17 @@
+<div class="post_title">
+  <h3>{{ title }}</h3>
+</div>
+
+<div class="container">
+  <div class="container spacer postspacer"></div>
+  <div class="container vertcont">
+    {{{ content }}}
+  </div>
+  <div class="container spacer postspacer"></div>
+</div>
+
+<div class="post_timestamp timestamp">
+  {{#if ../toggles.show_dates}}
+    {{ timestamp }}
+  {{/if}}
+</div>

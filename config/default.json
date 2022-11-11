@@ -1,12 +1,38 @@
 {
+  "output_path": "_site",
+  "posts_out_path": "posts",
+  "feeds": ["xml", "rss", "json"],
+  "posts_source_path": "./posts",
+  "static_source_path": "./static",
+  "templates_source_path": "./templates",
+  "toggles": {
+    "reverse_chronology": true,
+    "show_dates": true
+  },
+  "metadata": {
+    "site_fqdn": null,
+    "author": {
+      "name": null,
+      "email": null,
+      "link": null
+    },
+    "analytics": null
+  },
   "template_vars": {
     "header": {
-      "title": null,
+      "stylesheet": null,
       "main_title": null,
+      "sub_title": null,
       "main_content": null
     },
     "footer": {
       "footer_content": null
     }
-  }
+  },
+  "links": [
+    {
+      "href": "/feed.xml",
+      "title": "Feed"
+    }
+  ]
 }

@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+const subcommands = require('./src/cmds');
+const { AllowedPostFormats, HelpTabDistance } = require('./src/const');
+
+const options = {
+  format: {
+    type: 'string',
+    default: require('./src/const').DefaultPostFormat,
+    description: `The post file format. Allowed options: ${AllowedPostFormats.join(', ')}.`
+  }
+};
+
+const { positionals, values } = require('util').parseArgs({ allowPositionals: true, options });
+const [subCommand, ...args] = positionals;
+try {
+  subcommands[subCommand](args, values);
+} catch (e) {
+  if (e instanceof TypeError) {
+    console.log(e);
+    console.error(
+      [
+        '',
+        `Usage: ${process.argv[1]} [options] (<subcommand>) [args...]`,
+        '',
+        'Subcommands:',
+        '',
+        ...Object.entries(subcommands)
+          .sort(([ak], [bk]) => ak.localeCompare(bk))
+          .map(([k, v]) => `  ${k.padEnd(HelpTabDistance, ' ')}${v.helpText.description}`),
+        '',
+        'Options:',
+        '',
+        ...Object.entries(options).map(([k, v]) =>
+          `  --${k.padEnd(HelpTabDistance - 2, ' ')}${v.description}${'default' in v ? ` Default: ${v.default}` : ''}`),
+        ''
+      ].join('\n')
+    );
+    process.exit(0);
+  }
+
+  throw e;
+}

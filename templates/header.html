@@ -3,9 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="{{ stylesheet_template }}" />
+    {{#if title}}
+    <meta property="og:title" content="{{ title }}" />
+    {{/if}}
+    <meta property="og:site_name" content="{{ main_title }}" />
+    <meta property="og:description" content="{{ sub_title }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ metadata.site_fqdn }}" />
+    <title>
+      {{#if title}}
+      '{{ title }}',
+      {{/if}}
+      {{ main_title }}
+    </title>
+    <link rel="stylesheet" href="{{ stylesheet }}" />
   </head>
+  {{#if timestamp_native}}
+  <!-- {{ timestamp_native }} -->
+  {{/if}}
   <body>
     <div class="container" id="tl_container">
       <div class="container spacer"></div>
@@ -17,13 +32,30 @@
 
               <div class="container spacer"></div>
             </div>
-            <div class="container vertcont" id="title_container">
-              <hr width="100%"/>
-              <div class="container spacer" style="height: 1.5em;"></div>
-              <h2 id="title">
-                {{ main_title }}
-              </h2>
+              <div class="container vertcont" id="title_container">
+                <hr width="100%"/>
+                <div class="container link_container">
+                  <div class="container spacer"></div>
+                  {{#each links}}
+                    <div class="link_ele">
+                      <a href="{{ href }}">{{ title }}</a>
+                    </div>
+                  {{/each}}
+                  <div class="container spacer"></div>
+                </div>
+                <div class="container spacer" style="height: 1.5em;"></div>
+                <h2 id="title">
+                  <a href="{{ metadata.site_fqdn }}">{{{ main_title }}}</a>
+                </h2>
+                <div id="sub_title">
+                  {{{ sub_title }}}
+                </div>
+                <div class="container">
+                  <div class="container spacer mainsidespace"></div>
+                    <div id="main_content_container" class="container vertcont content_font content">
 
-              <span class="content_font" id="tagline" style="padding-bottom: 1em;">
-                {{ main_content }}
-              </span>
+                      {{#if main_content}}
+                      <div id="main_content">
+                        {{{ main_content }}}
+                      </div>
+                      {{/if}}

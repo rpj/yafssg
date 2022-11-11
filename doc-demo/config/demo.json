@@ -1,0 +1,45 @@
+{
+  "output_path": "../docs",
+  "posts_out_path": "posts",
+  "feeds": ["xml", "rss", "json"],
+  "posts_source_path": "./posts",
+  "static_source_path": "./static",
+  "templates_source_path": "../templates",
+  "toggles": {
+    "reverse_chronology": false,
+    "show_dates": false
+  },
+  "metadata": {
+    "site_fqdn": "https://rpj.github.io/yafssg",
+    "author": {
+      "name": "Ryan Joseph",
+      "email": "ryan@electricsheep.co",
+      "link": "https://github.com/rpj/yafssg"
+    }
+  },
+  "template_vars": {
+    "header": {
+      "stylesheet": "https://rpj.github.io/yafssg/static/style.css",
+      "sub_title": "for <b><a href='https://github.com/rpj/yafssg'>Yet Another Friendly Static Site Generator</a></b>",
+      "main_title": "Docs-As-A-Demo",
+      "main_content": "Works great for generating documentation sites too!"
+    },
+    "footer": {
+      "footer_content": "Ambivalently brought to you by <a href='https://electricsheep.co'>The Electric Sheep Co.</a>"
+    }
+  },
+  "links": [
+    {
+      "href": "https://github.com/rpj/yafssg",
+      "title": "Project"
+    },
+    {
+      "href": "https://github.com/rpj/yafssg/tree/main/doc-demo",
+      "title": "Site source"
+    },
+    {
+      "href": "https://rpj.github.io/yafssg/feed.xml",
+      "title": "Feed"
+    }
+  ]
+}
