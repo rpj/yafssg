@@ -1,0 +1,170 @@
+@import url("https://fonts.googleapis.com/css?family=Great+Vibes:400,500,700");
+@import url("https://fonts.googleapis.com/css?family=Rokkitt:400,500,700");
+@import url("https://fonts.googleapis.com/css?family=Lato:400,500,700");
+
+html {
+    height: 100%;
+}
+
+body {
+  font-family: "Great Vibes";
+  line-height: 1.5em;
+  font-size: 1.2em;
+  /*background-color: antiquewhite;*/
+  background: white;
+  background: linear-gradient(180deg, white 0%, rgb(217, 217, 217) 100%); 
+  color: black;
+  height: 100%;
+  background-size: 100%;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+h2 {
+  letter-spacing: 0.05em;
+  line-height: 2em;
+}
+
+h4 {
+  letter-spacing: 0.15em;
+}
+
+hr {
+  color: #333355;
+}
+
+a {
+  font-weight: lighter;
+}
+
+pre {
+  display: inline;
+}
+
+hr {
+  color:black;
+  border: 1px solid black;
+}
+
+input {
+  font-family: "Lato";
+  color: black;
+  text-align: center;
+}
+
+.container {
+  display: inline-flex;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+.vertcont {
+  flex-direction: column;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.main {
+  flex-grow: 3;
+}
+
+.content_font {
+  font-family: "Rokkitt";
+  font-size: 1em;
+  font-weight: lighter;
+}
+
+.important {
+  font-family: "Lato";
+  line-height: 2em;
+  font-weight: bold;
+}
+
+.important a {
+  font-weight: bold;
+  color: rgb(52, 52, 52)
+}
+
+a {
+  font-weight: bold;
+  color: rgb(52, 52, 52)
+}
+
+#tl_container {
+  width: 100%;
+}
+
+#center_container {
+  width: 100%;
+  padding: 1em;
+}
+
+#header_container {
+  flex-grow: 4;
+  justify-content: space-evenly;
+}
+
+#footer {
+  padding: 0.8em;
+  font-size: 0.8em;
+  font-weight: lighter;
+}
+
+#main_content {
+  font-weight: lighter;
+}
+
+#setup_list {
+  line-height: 1.5em;
+}
+
+#title_container {
+  text-align: center;
+}
+
+#main_content_container {
+  text-align: center;
+}
+
+#rsvp_form {
+  display: block;
+}
+
+#thankyou_form {
+  display: none;
+}
+
+@media screen and (max-width: 640px) {
+  #main_content_container {
+    display: block;
+  }
+
+  ol, ul {
+    padding-left: 1em;
+  }
+}
+
+/*div { border: 1px solid red; }*/
+
+.form_row {
+  width: 340px;
+}
+
+.form_label {
+  width: 240px;
+}
+
+.form_val {
+  width: 100%;
+}
+
+#thanks {
+  display: none;
+}
+
+#button_dynamic {
+  display: none;
+}

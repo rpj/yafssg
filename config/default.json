@@ -1,0 +1,12 @@
+{
+  "template_vars": {
+    "header": {
+      "title": null,
+      "main_title": null,
+      "main_content": null
+    },
+    "footer": {
+      "footer_content": null
+    }
+  }
+}
