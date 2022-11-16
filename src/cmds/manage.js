@@ -23,7 +23,7 @@ module.exports = function manage () {
 
   const readRows = () => {
     rows = readPosts().map(({ postDate, pathStub, meta: { title, draft, indexed } }) =>
-      (['', '', postDate, title.replace('^', '^^'), statusFromBools(draft, indexed),
+      (['  ', '  ', postDate, title.replace('^', '^^'), statusFromBools(draft, indexed),
         !pathStub ? '-' : path.join(config.posts_out_path, pathStub)]));
     toggles.forEach((t, i) => (rows[i][1] = t));
   };
@@ -76,7 +76,7 @@ module.exports = function manage () {
     terminal.moveTo(1, 1);
     rows[selected][0] = '';
     selected = selected === 0 && selectedIncr === -1 ? rows.length - 1 : (selected + selectedIncr) % rows.length;
-    rows[selected][0] = '>';
+    rows[selected][0] = '👉';
 
     const menuStr = menuStringMapper((x, i) => i === menuSelect ? `^+^[fg:white]^[bg:blue] ${x} ^[fg:blue]^[bg:white]` : ` ${x} `);
     const msLengther = menuStringMapper(x => ` ${x} `);
@@ -90,7 +90,7 @@ module.exports = function manage () {
     const postStatus = `${rows.length} posts in ${config.posts_source_path}`;
     tBar()(' '.repeat(terminal.width - postStatus.length - PADDING) +
       postStatus + ' '.repeat(PADDING) + '\n');
-    terminal.brightWhite().bgBlack('');
+    terminal.brightWhite().bgBrightBlack('');
   }
 
   let keyHandling = false;
@@ -102,8 +102,8 @@ module.exports = function manage () {
     renderTable();
   };
 
-  enterToContinue = (beforeFunc) => {
-    terminal('\n\nENTER to continue, CTRL+C to cancel...');
+  enterToContinue = (beforeFunc, inclCancelMsg = true) => {
+    terminal('\n\nENTER to continue' + (inclCancelMsg ? ', CTRL+C to cancel' : '') + '...');
     keyHandling = true;
     inputCapture = [[], () => {
       if (beforeFunc) {
@@ -191,7 +191,7 @@ module.exports = function manage () {
         ENTER: () => {
           const [, functor] = menuTuples[menuSelect];
           if (functor(rows[selected], selected) || functor?.yafssgOptions?.forceRedraw) {
-            enterToContinue();
+            enterToContinue(null, false);
           }
         }
       })[name]();
