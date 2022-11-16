@@ -154,7 +154,7 @@ module.exports = function manage () {
     });
     const postStatus = `${rows.length} posts in ${config.posts_source_path} -> building into ${path.resolve(config.output_path)}`;
     const termSize = `[${terminal.width}, ${terminal.height}]`;
-    tBar()(' '.repeat(PADDING) + postStatus + 
+    tBar()(' '.repeat(PADDING) + postStatus +
       ' '.repeat(terminal.width - postStatus.length - termSize.length - PADDING * 2) +
       termSize + ' '.repeat(PADDING) + '\n');
     terminal.brightWhite().bgBrightBlack('');
