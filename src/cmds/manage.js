@@ -58,16 +58,17 @@ module.exports = function manage () {
     return { filteredRows, titles };
   };
 
+  const tBright = () => terminal.noFormat().brightWhite().bgBrightBlack();
   const TOGGLE_CHAR = '✅';
   const menuTuples = [
-    ['Reload', reload],
+    ['🍔', reload],
     ...Object.entries(require('.'))
       .filter(([k, v]) => k !== path.parse(__filename).name)
       .sort(([ak], [bk]) => ak.localeCompare(bk))
       .map(([k, v]) => [k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/, ' $1'), v]),
     ['Change Status', (sel, i) => {
       const { filteredRows, titles } = gatherToggles();
-      terminal(`Change following ${titles.length} posts...\n\n* ${titles.join('\n* ')}\n\nstatuses to:\n`);
+      tBright()(`Change following ${titles.length} posts...\n\n* ${titles.join('\n* ')}\n\nstatuses to:\n`);
       keyHandling = false;
       terminal.grabInput(false);
       terminal.singleColumnMenu(Object.values(StatusesColored).map(x => x.replace(/\^./, '')), {
@@ -99,13 +100,20 @@ module.exports = function manage () {
     }],
     ['Delete', (sel, i) => {
       const { filteredRows, titles } = gatherToggles();
-      terminal(`Remove following ${titles.length} post(s)?\n\n* ${titles.join('\n* ')}\n`);
-      enterToContinue(() => {
-        filteredRows
-          .flatMap(([,, ts]) => glob.sync(path.join(PostsPath, ts) + '*'))
-          .forEach((killPath) => fs.rmSync(killPath));
-        toggles = [];
-        selected = 0;
+      tBright()(`Remove following ${titles.length} post(s)?\n\n* ${titles.join('\n* ')}\n`);
+      keyHandling = false;
+      terminal.grabInput(false);
+      terminal.singleColumnMenu(['No', 'Yes'], function (err, result) {
+        if (err) throw err;
+        if (result.selectedText === 'Yes') {
+          filteredRows
+            .flatMap(([,, ts]) => glob.sync(path.join(PostsPath, ts) + '*'))
+            .forEach((killPath) => fs.rmSync(killPath));
+          toggles = [];
+          selected = 0;
+          require('.').build();
+          enterToContinue(null, false);
+        }
       });
     }],
     ['Quit', quit]
@@ -115,14 +123,14 @@ module.exports = function manage () {
   let inputCapture = null;
   const origNewPost = newPostTuple[1];
   newPostTuple[1] = () => {
-    terminal('Enter a title for the new post:  ');
+    tBright()('Enter a title for the new post:  ');
     keyHandling = false;
     terminal.grabInput(false);
     terminal.inputField({}, function (err, input) {
       if (err) throw err;
-      terminal.bgBlue('\n\n');
+      tBright()('\n\n');
       origNewPost(input.split(/\s+/), { format: DefaultPostFormat });
-      enterToContinue();
+      enterToContinue(null, false);
     });
   };
 
@@ -138,20 +146,22 @@ module.exports = function manage () {
     const menuStr = menuStringMapper((x, i) => i === menuSelect ? `^+^[fg:white]^[bg:blue] ${x} ^[fg:blue]^[bg:white]` : ` ${x} `);
     const msLengther = menuStringMapper(x => ` ${x} `);
     const tBar = () => terminal.dim().bgWhite().blue();
-    tBar()(menuStr + ' '.repeat(terminal.width - msLengther.length - 2 - PADDING) + '🍔' + ' '.repeat(PADDING) + '\n');
+    tBar()(menuStr + ' '.repeat(terminal.width - msLengther.length - PADDING) + ' '.repeat(PADDING) + '\n');
     // :frowning: TK has support for what I want to do properly but it's broken
     terminal.table([headers].concat(rows), {
       contentHasMarkup: true,
       firstRowTextAttr: { bgColor: 'blue' }
     });
-    const postStatus = `${rows.length} posts in ${config.posts_source_path}`;
-    tBar()(' '.repeat(terminal.width - postStatus.length - PADDING) +
-      postStatus + ' '.repeat(PADDING) + '\n');
+    const postStatus = `${rows.length} posts in ${config.posts_source_path} -> building into ${path.resolve(config.output_path)}`;
+    const termSize = `[${terminal.width}, ${terminal.height}]`;
+    tBar()(' '.repeat(PADDING) + postStatus + 
+      ' '.repeat(terminal.width - postStatus.length - termSize.length - PADDING * 2) +
+      termSize + ' '.repeat(PADDING) + '\n');
     terminal.brightWhite().bgBrightBlack('');
   }
 
   let keyHandling = false;
-  menu.Reload = menuTuples.find(([n]) => n === 'Reload')[1] = reload = () => {
+  menu['🍔'] = menuTuples.find(([n]) => n === '🍔')[1] = reload = () => {
     menuSelect = 0;
     terminal.clear();
     terminal.grabInput();
@@ -170,10 +180,9 @@ module.exports = function manage () {
     }];
   };
 
-  /*
-  terminal.on('terminal', function (...a) {
-    console.log('term event', a);
-  }); */
+  terminal.on('resize', function (...a) {
+    reload();
+  });
 
   terminal.on('key', function (name, matches, { codepoint }) {
     if (!keyHandling) return;
@@ -208,20 +217,24 @@ module.exports = function manage () {
         return;
       }
 
+      const _toggle = () => {
+        toggle(rows[selected], selected);
+        reload();
+      };
+
       ({
         ESCAPE: () => {
           toggles = [];
           reload();
         },
 
+        CTRL_D: quit,
         CTRL_C: quit,
         q: quit,
         Q: quit,
 
-        CTRL_T: () => {
-          toggle(rows[selected], selected);
-          reload();
-        },
+        t: _toggle,
+        T: _toggle,
 
         UP: () => renderTable(-1),
         DOWN: () => renderTable(1),
@@ -243,6 +256,10 @@ module.exports = function manage () {
         }
       })[name]();
     } catch (e) {
+      if (e instanceof TypeError && e.message.endsWith('is not a function')) {
+        return;
+      }
+
       console.error(e);
     }
   });
