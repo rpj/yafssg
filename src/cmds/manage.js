@@ -61,8 +61,7 @@ module.exports = function manage () {
         filtRows
           .flatMap(([,, ts]) => glob.sync(path.join(PostsPath, ts) + '*'))
           .forEach((killPath) => fs.rmSync(killPath));
-        toggles = toggles.filter(([, i]) => !filtRows.includes(i));
-        // rows = rows.filter(([, i]) => !filtRows.includes(i));
+        toggles = [];
         selected = 0;
       });
     }],
