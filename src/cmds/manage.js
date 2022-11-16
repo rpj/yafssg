@@ -74,6 +74,7 @@ module.exports = function manage () {
         style: terminal.inverse,
         selectedStyle: terminal.dim.blue.bgGreen
       }, function (err, response) {
+        if (err) throw err;
         const { selectedText } = response; // XXX: fix this, the awful if/elses below and the StatusesColored usage above together
         filteredRows.forEach(([,, ts]) => {
           const pPath = path.join(PostsPath, ts + '.json');
@@ -82,8 +83,7 @@ module.exports = function manage () {
           if (selectedText.toLowerCase() === 'draft') {
             parsed.draft = true;
             parsed.indexed = false;
-          }
-          else if (selectedText.toLowerCase() === 'hidden') {
+          } else if (selectedText.toLowerCase() === 'hidden') {
             parsed.draft = false;
             parsed.indexed = false;
           } else if (selectedText.toLowerCase() === 'published') {
@@ -95,7 +95,7 @@ module.exports = function manage () {
           require('.').build();
           enterToContinue(null, false);
         });
-      })
+      });
     }],
     ['Delete', (sel, i) => {
       const { filteredRows, titles } = gatherToggles();
