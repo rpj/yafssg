@@ -42,7 +42,7 @@ module.exports = function manage () {
     return true;
   };
 
-  const TOGGLE_CHAR = '☑';
+  const TOGGLE_CHAR = '✅';
   const menuTuples = [
     ['Reload', reload],
     ...Object.entries(require('.'))
@@ -166,8 +166,12 @@ module.exports = function manage () {
       }
 
       ({
+        ESCAPE: () => {
+          toggles = [];
+          reload();
+        },
+
         CTRL_C: quit,
-        ESCAPE: quit,
         q: quit,
         Q: quit,
 
