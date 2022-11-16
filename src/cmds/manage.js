@@ -6,10 +6,16 @@ const { terminal } = require('terminal-kit');
 const { readPosts } = require('../lib');
 const { DefaultPostFormat, PostsPath } = require('../const');
 
+const StatusesColored = {
+  draft: '^CDraft',
+  hidden: '^YHidden',
+  published: '^RPublished'
+};
+
 function statusFromBools (draft, indexed) {
-  if (draft) { return '^CDrafted'; }
-  if (!draft && !indexed) { return '^YHidden'; }
-  if (indexed) { return '^RPublished'; }
+  if (draft) { return StatusesColored.draft; }
+  if (!draft && !indexed) { return StatusesColored.hidden; }
+  if (indexed) { return StatusesColored.published; }
 }
 
 const PADDING = 2;
@@ -42,6 +48,16 @@ module.exports = function manage () {
     return true;
   };
 
+  const gatherToggles = () => {
+    let toggled = toggles.map((x, i) => ([x, i])).filter(([x]) => x === TOGGLE_CHAR).map(([, i]) => i);
+    if (!toggled.length) {
+      toggled = [selected];
+    }
+    const filteredRows = rows.filter((x, i) => toggled.includes(i));
+    const titles = filteredRows.map(x => x[3]);
+    return { filteredRows, titles };
+  };
+
   const TOGGLE_CHAR = '✅';
   const menuTuples = [
     ['Reload', reload],
@@ -49,16 +65,43 @@ module.exports = function manage () {
       .filter(([k, v]) => k !== path.parse(__filename).name)
       .sort(([ak], [bk]) => ak.localeCompare(bk))
       .map(([k, v]) => [k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/, ' $1'), v]),
+    ['Change Status', (sel, i) => {
+      const { filteredRows, titles } = gatherToggles();
+      terminal(`Change following ${titles.length} posts...\n\n* ${titles.join('\n* ')}\n\nstatuses to:\n`);
+      keyHandling = false;
+      terminal.grabInput(false);
+      terminal.singleColumnMenu(Object.values(StatusesColored).map(x => x.replace(/\^./, '')), {
+        style: terminal.inverse,
+        selectedStyle: terminal.dim.blue.bgGreen
+      }, function (err, response) {
+        const { selectedText } = response; // XXX: fix this, the awful if/elses below and the StatusesColored usage above together
+        filteredRows.forEach(([,, ts]) => {
+          const pPath = path.join(PostsPath, ts + '.json');
+          const parsed = JSON.parse(fs.readFileSync(pPath));
+
+          if (selectedText.toLowerCase() === 'draft') {
+            parsed.draft = true;
+            parsed.indexed = false;
+          }
+          else if (selectedText.toLowerCase() === 'hidden') {
+            parsed.draft = false;
+            parsed.indexed = false;
+          } else if (selectedText.toLowerCase() === 'published') {
+            parsed.draft = false;
+            parsed.indexed = true;
+          }
+
+          fs.writeFileSync(pPath, JSON.stringify(parsed, null, 2));
+          require('.').build();
+          enterToContinue(null, false);
+        });
+      })
+    }],
     ['Delete', (sel, i) => {
-      let toggled = toggles.map((x, i) => ([x, i])).filter(([x]) => x === TOGGLE_CHAR).map(([, i]) => i);
-      if (!toggled.length) {
-        toggled = [i];
-      }
-      const filtRows = rows.filter((x, i) => toggled.includes(i));
-      const titles = filtRows.map(x => x[3]);
+      const { filteredRows, titles } = gatherToggles();
       terminal(`Remove following ${titles.length} post(s)?\n\n* ${titles.join('\n* ')}\n`);
       enterToContinue(() => {
-        filtRows
+        filteredRows
           .flatMap(([,, ts]) => glob.sync(path.join(PostsPath, ts) + '*'))
           .forEach((killPath) => fs.rmSync(killPath));
         toggles = [];
