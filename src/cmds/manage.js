@@ -62,7 +62,7 @@ module.exports = function manage () {
           .flatMap(([,, ts]) => glob.sync(path.join(PostsPath, ts) + '*'))
           .forEach((killPath) => fs.rmSync(killPath));
         toggles = toggles.filter(([, i]) => !filtRows.includes(i));
-        //rows = rows.filter(([, i]) => !filtRows.includes(i));
+        // rows = rows.filter(([, i]) => !filtRows.includes(i));
         selected = 0;
       });
     }],
@@ -127,10 +127,10 @@ module.exports = function manage () {
       enterToContinue();
     });
   };
-/*
+  /*
   terminal.on('terminal', function (...a) {
     console.log('term event', a);
-  });*/
+  }); */
 
   terminal.on('key', function (name, matches, { codepoint }) {
     if (!keyHandling) return;
