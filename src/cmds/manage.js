@@ -62,10 +62,12 @@ module.exports = function manage () {
   const TOGGLE_CHAR = '✅';
   const menuTuples = [
     ['🍔', reload],
+
     ...Object.entries(require('.'))
       .filter(([k, v]) => k !== path.parse(__filename).name)
       .sort(([ak], [bk]) => ak.localeCompare(bk))
       .map(([k, v]) => [k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/, ' $1'), v]),
+
     ['Change Status', (sel, i) => {
       const { filteredRows, titles } = gatherToggles();
       tBright()(`Change following ${titles.length} posts...\n\n* ${titles.join('\n* ')}\n\nstatuses to:\n`);
@@ -98,6 +100,7 @@ module.exports = function manage () {
         });
       });
     }],
+
     ['Delete', (sel, i) => {
       const { filteredRows, titles } = gatherToggles();
       tBright()(`Remove following ${titles.length} post(s)?\n\n* ${titles.join('\n* ')}\n`);
@@ -116,6 +119,7 @@ module.exports = function manage () {
         }
       });
     }],
+
     ['Quit', quit]
   ];
 
