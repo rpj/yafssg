@@ -5,6 +5,7 @@
   "posts_source_path": "./posts",
   "static_source_path": "./static",
   "templates_source_path": "./templates",
+  "display_locale": "en-US",
   "toggles": {
     "reverse_chronology": true,
     "show_dates": true
@@ -29,10 +30,7 @@
       "footer_content": null
     }
   },
-  "links": [
-    {
-      "href": "/feed.xml",
-      "title": "Feed"
-    }
-  ]
+  "links": {
+    "Feed": "/feed.xml"
+  }
 }
