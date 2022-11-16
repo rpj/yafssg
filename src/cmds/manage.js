@@ -68,6 +68,21 @@ module.exports = function manage () {
     ['Quit', quit]
   ];
 
+  const newPostTuple = menuTuples.find(([k]) => k === 'New Post');
+  let inputCapture = null;
+  const origNewPost = newPostTuple[1];
+  newPostTuple[1] = () => {
+    terminal('Enter a title for the new post:  ');
+    keyHandling = false;
+    terminal.grabInput(false);
+    terminal.inputField({}, function (err, input) {
+      if (err) throw err;
+      terminal.bgBlue('\n\n');
+      origNewPost(input.split(/\s+/), { format: DefaultPostFormat });
+      enterToContinue();
+    });
+  };
+
   const menu = Object.fromEntries(menuTuples);
   const menuStringMapper = (mapper) => ' '.repeat(PADDING) + Object.keys(menu).map(mapper).join('  ');
 
@@ -112,20 +127,6 @@ module.exports = function manage () {
     }];
   };
 
-  const newPostTuple = menuTuples.find(([k]) => k === 'New Post');
-  let inputCapture = null;
-  const origNewPost = newPostTuple[1];
-  newPostTuple[1] = () => {
-    terminal('Enter a title for the new post:  ');
-    keyHandling = false;
-    terminal.grabInput(false);
-    terminal.inputField({}, function (err, input) {
-      if (err) throw err;
-      terminal.bgBlue('\n\n');
-      origNewPost(input.split(/\s+/), { format: DefaultPostFormat });
-      enterToContinue();
-    });
-  };
   /*
   terminal.on('terminal', function (...a) {
     console.log('term event', a);
