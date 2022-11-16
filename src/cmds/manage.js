@@ -17,9 +17,9 @@ const PADDING = 2;
 module.exports = function manage () {
   let selected = 0;
   let menuSelect = 0;
-  const toggles = [];
-  const headers = ['', '', 'Timestamp', 'Title', 'Status', 'Path'];
+  let toggles = [];
   let rows = [];
+  const headers = ['', '', 'Timestamp', 'Title', 'Status', 'Path'];
 
   const readRows = () => {
     rows = readPosts().map(({ postDate, pathStub, meta: { title, draft, indexed } }) =>
@@ -35,6 +35,7 @@ module.exports = function manage () {
   }
 
   let enterToContinue; // eslint-disable-line prefer-const
+  let reload;
 
   const toggle = (sel, i) => {
     toggles[i] = toggles[i] === TOGGLE_CHAR ? '' : TOGGLE_CHAR;
@@ -43,8 +44,10 @@ module.exports = function manage () {
 
   const TOGGLE_CHAR = '☑';
   const menuTuples = [
+    ['Reload', reload],
     ...Object.entries(require('.'))
       .filter(([k, v]) => k !== path.parse(__filename).name)
+      .sort(([ak], [bk]) => ak.localeCompare(bk))
       .map(([k, v]) => [k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/, ' $1'), v]),
     ['Delete', (sel, i) => {
       let toggled = toggles.map((x, i) => ([x, i])).filter(([x]) => x === TOGGLE_CHAR).map(([, i]) => i);
@@ -58,6 +61,9 @@ module.exports = function manage () {
         filtRows
           .flatMap(([,, ts]) => glob.sync(path.join(PostsPath, ts) + '*'))
           .forEach((killPath) => fs.rmSync(killPath));
+        toggles = toggles.filter(([, i]) => !filtRows.includes(i));
+        //rows = rows.filter(([, i]) => !filtRows.includes(i));
+        selected = 0;
       });
     }],
     ['Quit', quit]
@@ -84,17 +90,26 @@ module.exports = function manage () {
     const postStatus = `${rows.length} posts in ${config.posts_source_path}`;
     tBar()(' '.repeat(terminal.width - postStatus.length - PADDING) +
       postStatus + ' '.repeat(PADDING) + '\n');
+    terminal.brightWhite().bgBlack('');
   }
 
+  let keyHandling = false;
+  menu.Reload = menuTuples.find(([n]) => n === 'Reload')[1] = reload = () => {
+    menuSelect = 0;
+    terminal.clear();
+    terminal.grabInput();
+    readRows();
+    renderTable();
+  };
+
   enterToContinue = (beforeFunc) => {
-    terminal('\n\n<ENTER> to continue...');
+    terminal('\n\nENTER to continue, CTRL+C to cancel...');
+    keyHandling = true;
     inputCapture = [[], () => {
       if (beforeFunc) {
         beforeFunc();
       }
-      menuSelect = 0;
-      readRows();
-      renderTable();
+      reload();
     }];
   };
 
@@ -103,14 +118,23 @@ module.exports = function manage () {
   const origNewPost = newPostTuple[1];
   newPostTuple[1] = () => {
     terminal('Enter a title for the new post:  ');
-    inputCapture = [[], (buffer) => {
-      terminal('\n');
-      origNewPost(buffer.join('').split(/\s+/), { format: DefaultPostFormat });
+    keyHandling = false;
+    terminal.grabInput(false);
+    terminal.inputField({}, function (err, input) {
+      if (err) throw err;
+      terminal.bgBlue('\n\n');
+      origNewPost(input.split(/\s+/), { format: DefaultPostFormat });
       enterToContinue();
-    }];
+    });
   };
+/*
+  terminal.on('terminal', function (...a) {
+    console.log('term event', a);
+  });*/
 
   terminal.on('key', function (name, matches, { codepoint }) {
+    if (!keyHandling) return;
+
     try {
       if (inputCapture !== null) {
         const [buffer, next] = inputCapture;
@@ -149,8 +173,7 @@ module.exports = function manage () {
 
         CTRL_T: () => {
           toggle(rows[selected], selected);
-          readRows();
-          renderTable();
+          reload();
         },
 
         UP: () => renderTable(-1),
@@ -168,8 +191,7 @@ module.exports = function manage () {
         ENTER: () => {
           const [, functor] = menuTuples[menuSelect];
           if (functor(rows[selected], selected) || functor?.yafssgOptions?.forceRedraw) {
-            readRows();
-            renderTable();
+            enterToContinue();
           }
         }
       })[name]();
@@ -179,6 +201,7 @@ module.exports = function manage () {
   });
 
   terminal.clear();
+  keyHandling = true;
   terminal.grabInput();
   terminal.fullscreen();
 

@@ -7,7 +7,6 @@ const { format } = require('date-fns');
 const { PostsPath } = require('./const');
 
 function dynRequireFrom (dir, addedCb, opts = { pathReplace: null }) {
-  const paths = {};
   return fs.readdirSync(dir).reduce((a, dirEnt) => {
     const fPath = path.resolve(path.join(dir, dirEnt));
     const fParsed = path.parse(fPath);
@@ -20,8 +19,6 @@ function dynRequireFrom (dir, addedCb, opts = { pathReplace: null }) {
       if (opts.pathReplace) {
         fParsed.name = fParsed.name.replaceAll(opts.pathReplace.from, opts.pathReplace.to);
       }
-
-      paths[fParsed.name] = fPath;
 
       return {
         [fParsed.name]: require(fPath),
