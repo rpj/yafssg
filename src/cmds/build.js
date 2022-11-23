@@ -110,7 +110,7 @@ module.exports = function build () {
     mkdirIgnore(OutPath);
   });
 
-  console.log(`> Building posts sourced from ${PostsPath}...`);
+  console.log(`> Building posts sourced from ${PostsPath} in locale ${config.display_locale}...`);
   const postsOutPath = path.join(OutPath, config.posts_out_path);
   mkdirIgnore(postsOutPath);
 

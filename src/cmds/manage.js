@@ -68,6 +68,22 @@ module.exports = function manage () {
       .sort(([ak], [bk]) => ak.localeCompare(bk))
       .map(([k, v]) => [k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/, ' $1'), v]),
 
+    ['Change Title', (sel, i) => {
+      tBright()(`Change title from "${sel[3]}" to: `);
+      keyHandling = false;
+      terminal.grabInput(false);
+      terminal.inputField({}, function (err, input) {
+        if (err) throw err;
+        tBright()('\n\n');
+        const [,, ts] = sel;
+        const pPath = path.join(PostsPath, ts + '.json');
+        const parsed = JSON.parse(fs.readFileSync(pPath));
+        parsed.title = input;
+        fs.writeFileSync(pPath, JSON.stringify(parsed, null, 2));
+        require('.').build();
+        enterToContinue(null, false);
+      });
+    }],
     ['Change Status', (sel, i) => {
       const { filteredRows, titles } = gatherToggles();
       tBright()(`Change following ${titles.length} posts...\n\n* ${titles.join('\n* ')}\n\nstatuses to:\n`);
@@ -79,25 +95,32 @@ module.exports = function manage () {
       }, function (err, response) {
         if (err) throw err;
         const { selectedText } = response; // XXX: fix this, the awful if/elses below and the StatusesColored usage above together
-        filteredRows.forEach(([,, ts]) => {
+        const changedRows = filteredRows.reduce((a, [,, ts]) => {
           const pPath = path.join(PostsPath, ts + '.json');
           const parsed = JSON.parse(fs.readFileSync(pPath));
 
           if (selectedText.toLowerCase() === 'draft') {
             parsed.draft = true;
             parsed.indexed = false;
+            a++;
           } else if (selectedText.toLowerCase() === 'hidden') {
             parsed.draft = false;
             parsed.indexed = false;
+            a++;
           } else if (selectedText.toLowerCase() === 'published') {
             parsed.draft = false;
             parsed.indexed = true;
+            a++;
           }
 
           fs.writeFileSync(pPath, JSON.stringify(parsed, null, 2));
+          return a;
+        }, 0);
+
+        if (changedRows > 0) {
           require('.').build();
           enterToContinue(null, false);
-        });
+        }
       });
     }],
 
@@ -143,9 +166,11 @@ module.exports = function manage () {
 
   function renderTable (selectedIncr = 0) {
     terminal.moveTo(1, 1);
-    rows[selected][0] = '';
-    selected = selected === 0 && selectedIncr === -1 ? rows.length - 1 : (selected + selectedIncr) % rows.length;
-    rows[selected][0] = '👉';
+    if (rows.length) {
+      rows[selected][0] = '';
+      selected = selected === 0 && selectedIncr === -1 ? rows.length - 1 : (selected + selectedIncr) % rows.length;
+      rows[selected][0] = '👉';
+    }
 
     const menuStr = menuStringMapper((x, i) => i === menuSelect ? `^+^[fg:white]^[bg:blue] ${x} ^[fg:blue]^[bg:white]` : ` ${x} `);
     const msLengther = menuStringMapper(x => ` ${x} `);

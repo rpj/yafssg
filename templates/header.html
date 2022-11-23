@@ -6,6 +6,9 @@
     {{#if title}}
     <meta property="og:title" content="{{ title }}" />
     {{/if}}
+    {{#unless title}}
+    <link rel="alternate" type="application/rss+xml" title="{{ main_title }}" href="{{ links.Feed }}" />
+    {{/unless}}
     <meta property="og:site_name" content="{{ main_title }}" />
     <meta property="og:description" content="{{ sub_title }}" />
     <meta property="og:type" content="website" />
@@ -38,7 +41,7 @@
                   <div class="container spacer"></div>
                   {{#each links}}
                     <div class="link_ele">
-                      <a href="{{ href }}">{{ title }}</a>
+                      <a href="{{ this }}">{{ @key }}</a>
                     </div>
                   {{/each}}
                   <div class="container spacer"></div>

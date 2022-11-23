@@ -5,6 +5,7 @@ const config = require('config');
 const { nanoid } = require('nanoid');
 const { format } = require('date-fns');
 const { PostsPath } = require('./const');
+const { locale } = require(`date-fns/locale/${config.display_locale}`);
 
 function dynRequireFrom (dir, addedCb, opts = { pathReplace: null }) {
   return fs.readdirSync(dir).reduce((a, dirEnt) => {
@@ -37,9 +38,9 @@ function writeSync (path, content, silent = false) {
   if (!silent) console.log(`Wrote ${path}`);
 }
 
-function dateToDisplayString (dateObj) { return format(dateObj, 'PPP'); }
+function dateToDisplayString (dateObj) { return format(dateObj, 'PPP', { locale }); }
 function dateToFsString (dateObj) { return dateObj.toISOString().replaceAll(':', '_').replace(/\.\d+Z$/, ''); }
-function dateFromFsString (fsDateString) { return new Date(fsDateString.replaceAll('_', ':')); }
+function dateFromFsString (fsDateString) { return new Date(fsDateString.replaceAll('_', ':') + '.000Z'); }
 
 function readPosts ({ forBuilding } = {}) {
   return glob.sync(path.join(PostsPath, '*.json'))
