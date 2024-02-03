@@ -91,7 +91,7 @@ function buildFeeds (postIndex) {
     date,
     title,
     author: config.metadata.author,
-    link: `${config.metadata.site_fqdn}/${pathStub}`
+    link: `${config.metadata.site_fqdn}/${config.posts_out_path}/${pathStub}`
   }));
 
   Object.entries({
