@@ -43,7 +43,7 @@ function dateToFsString (dateObj) { return dateObj.toISOString().replaceAll(':',
 function dateFromFsString (fsDateString) { return new Date(fsDateString.replaceAll('_', ':') + '.000Z'); }
 
 function readPosts ({ forBuilding } = {}) {
-  return glob.sync(path.join(PostsPath, '*.json'))
+  return glob.sync(path.join(PostsPath, '*.json'), { windowsPathsNoEscape: true })
     .map((postMetaFile) => {
       const meta = JSON.parse(fs.readFileSync(postMetaFile));
       const postDate = path.parse(postMetaFile).name;

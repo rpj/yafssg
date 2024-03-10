@@ -4,7 +4,7 @@
   "description": "",
   "main": "yafssg.js",
   "engines": {
-    "node": "18"
+    "node": ">=18"
   },
   "scripts": {
     "lint": "semistandard --fix --verbose yafssg src/*.js src/cmds/*.js"
