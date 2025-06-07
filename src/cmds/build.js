@@ -105,9 +105,13 @@ function buildFeeds (postIndex) {
 }
 
 module.exports = function build () {
+  mkdirIgnore(OutPath);
+  
   ignore(() => {
-    fs.rmSync(OutPath, { recursive: true });
-    mkdirIgnore(OutPath);
+    const postsOutPath = path.join(OutPath, config.posts_out_path);
+    if (fs.existsSync(postsOutPath)) {
+      fs.rmSync(postsOutPath, { recursive: true });
+    }
   });
 
   console.log(`> Building posts sourced from ${PostsPath} in locale ${config.display_locale}...`);
